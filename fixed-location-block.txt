@@ -1,0 +1,11 @@
+	# Sumiya_1 project location
+	location /sumiya_1/ {
+		alias /srv/www/sumiya_1/;
+		index index.html index.htm index.php;
+
+		location ~ \.php$ {
+			include snippets/fastcgi-php.conf;
+			fastcgi_param SCRIPT_FILENAME $request_filename;
+			fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+		}
+	}
