@@ -323,6 +323,12 @@
     </footer>
 
     <script>
+        // ============================================================
+        // IMPORTANT: Replace this URL with your Google Apps Script URL
+        // ============================================================
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSCemKb4FO69t2jVFl3A4vdPZ-KBMEdVnSmG1QK6GXlSAKZKGmedtrOZashJdfQIjI8w/exec';
+        // ============================================================
+
         let selectedType = '';
 
         function showForm(type) {
@@ -353,6 +359,12 @@
         document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
+            // Check if Google Script URL is configured
+            if (GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+                showMessage('Тохиргоо дутуу байна. SETUP.md файлыг уншина уу.', false);
+                return;
+            }
+
             const messageText = document.getElementById('messageText').value.trim();
 
             if (!messageText) {
@@ -366,8 +378,9 @@
             submitBtn.textContent = 'Илгээж байна...';
 
             try {
-                const response = await fetch('submit.php', {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
+                    mode: 'no-cors',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -377,14 +390,11 @@
                     })
                 });
 
-                const result = await response.json();
+                // With no-cors mode, we can't read the response
+                // So we assume success if no error was thrown
+                showMessage('Таны хүсэлт амжилттай илгээгдлээ. Баярлалaa!', true);
+                hideForm();
 
-                if (result.success) {
-                    showMessage('Таны хүсэлт амжилттай илгээгдлээ. Баярлалaa!', true);
-                    hideForm();
-                } else {
-                    showMessage('Алдаа гарлaa: ' + (result.error || 'Дахин оролдоно уу'), false);
-                }
             } catch (error) {
                 showMessage('Холболтын алдаа гарлaa. Дахин оролдоно уу.', false);
             } finally {
